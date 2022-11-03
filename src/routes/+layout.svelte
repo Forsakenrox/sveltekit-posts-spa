@@ -1,5 +1,5 @@
 <script>
-    import { page } from '$app/stores';
+    import { page } from "$app/stores";
     console.log($page);
 </script>
 
@@ -9,25 +9,18 @@
             <div class="sidebar" style="overflow-y: auto;">
                 <div class="form-inline">
                     <div class="input-group" data-widget="sidebar-search">
-                        <input
-                            class="form-control form-control-sidebar"
-                            type="search"
-                            placeholder="Search"
-                            aria-label="Search" />
+                        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search" />
                         <div class="input-group-append">
                             <button class="btn btn-sidebar"><i class="fas fa-search fa-fw" /></button>
                         </div>
                     </div>
                 </div>
                 <nav class="mt-2">
-                    <ul
-                        class="nav nav-pills nav-sidebar flex-column"
-                        data-widget="treeview"
-                        role="menu"
-                        data-accordion="false">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <li class="nav-header">EXAMPLES</li>
                         <li class="nav-item">
-                            <a href="/" class="nav-link {$page.url.pathname == '/' ? 'active':''}"><i class="nav-icon far fa-calendar-alt" />
+                            <a href="/" class="nav-link {$page.url.pathname == '/' ? 'active' : ''}"
+                                ><i class="nav-icon far fa-calendar-alt" />
                                 <p>
                                     Home
                                     <span class="badge badge-info right">2</span>
@@ -35,7 +28,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="/posts" class="nav-link {$page.url.pathname.startsWith('/posts') ? 'active':''}"><i class="nav-icon far fa-image" />
+                            <a href="/posts" class="nav-link {$page.url.pathname.startsWith('/posts') ? 'active' : ''}"
+                                ><i class="nav-icon far fa-image" />
                                 <p>Posts</p>
                             </a>
                         </li>
@@ -55,16 +49,22 @@
                                 <li class="breadcrumb-item">
                                     <a href="#">Home</a>
                                 </li>
-                                <li class="breadcrumb-item active">
-                                    Simple Tables
-                                </li>
+                                <li class="breadcrumb-item active">Simple Tables</li>
                             </ol>
                         </div>
                     </div>
                 </div>
             </section>
             <section class="content-header">
-                <slot><!-- optional fallback --></slot>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <slot><!-- optional fallback --></slot>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </section>
         </div>
         <footer class="main-footer">
