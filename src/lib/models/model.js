@@ -3,62 +3,67 @@ import { errors } from "$lib/stores/errors";
 export class Model {
 
     url = "http://127.0.0.1/";
-    // id = null;
-    // constructor(props) {
-    //     this.id = props.id;
-    // }
+    config = undefined;
 
-    async all() {
-        const response = await axios.get(this.url).then(
-            (response) => response,
-            (response) => response
-        );
-        return response.data;
-    }
-    async find(id) {
-        const response = await axios.get(this.url + id).then(
-            (response) => response,
-            (response) => response
-        );
-        return response.data;
-    }
-    async delete(id) {
-        const response = await axios.delete(this.url + id).then(
-            (response) => response,
-            (response) => response
-        );
-        if (response.status == 200) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    async create(model) {
-        console.log(123);
-        const response = await axios.post(this.url, model).then(
-            (response) => response,
-            (response) => response.response
-        );
+    all() {
 
-        if (response.status == 200) {
-            return true;
-        } else if (response.status == 422) {
-            errors.update(errors => response.data);
-            return false;
-        }
+        this.config = {
+            url: this.url,
+            method: "GET",
+        };
+        return this.handleRequest();
     }
-    async update(model) {
 
-        const response = await axios.patch(this.url + model.id, model).then(
-            (response) => response,
-            (response) => response.response
-        );
+    find(id) {
+        this.config = {
+            url: this.url + id,
+            method: "GET",
+        };
+        return this.handleRequest();
+    }
 
-        if (response.status == 200) {
-            return true;
-        } else if (response.status == 422) {
-            errors.update(errors => response.data);
-            return false;
+    update(model) {
+        this.config = {
+            url: this.url + model.id,
+            method: "PATCH",
+            data: model,
+        };
+        return this.handleRequest();
+    }
+
+    delete(id) {
+        this.config = {
+            url: this.url + id,
+            method: "DELETE",
+        };
+        return this.handleRequest();
+    }
+
+    create(model) {
+        this.config = {
+            url: this.url,
+            method: "POST",
+            data: model
+        };
+        return this.handleRequest();
+    }
+
+    async handleRequest() {
+        try {
+            const response = await axios(this.config);
+            errors.reset();
+            return response.data;
+        } catch (err) {
+            if (err.response) {
+                // The client was given an error response (5xx, 4xx)
+                if (err.response.status == 422) {
+                    errors.update(() => err.response.data);
+                }
+            } else if (err.request) {
+                errors.update(() => err.request.responseText);
+                // The client never received a response, and the request was never left
+            }
+            return err;
         }
     }
 }

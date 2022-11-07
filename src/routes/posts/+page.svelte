@@ -1,16 +1,19 @@
 <script>
+    import { errors } from "$lib/stores/errors";
     import { post as Post } from "$lib/models/post.js";
     import { onMount } from "svelte";
     import { Skeleton } from "svelte-loading-skeleton";
     import Button from "$lib/components/button.svelte";
 
+    export let data;
+
     let isLoading = false;
-    let posts = [];
+    let posts = data.posts;
 
     onMount(async () => {
-        await getPosts();
+        // await getPosts();
     });
-
+    console.log(data);
     async function getPosts() {
         isLoading = true;
         posts = await Post.all();
@@ -23,7 +26,7 @@
         posts[postId].isDeleting = true;
         let result = await Post.delete(id);
 
-        if (result == true) {
+        if (!$errors?.errors) {
             posts = posts.filter((post) => post.isDeleting != true);
         } else {
             posts[postId].isDeleting = false;

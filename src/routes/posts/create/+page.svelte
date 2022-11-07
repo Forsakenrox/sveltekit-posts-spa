@@ -8,8 +8,11 @@
 
     async function create() {
         isLoadingButton = true;
-        await Post.create(post);
+        let result = await Post.create(post);
         isLoadingButton = false;
+        if (!$errors?.errors) {
+            goto("/posts/");
+        }
     }
 </script>
 

@@ -7,7 +7,7 @@
     import Button from "$lib/components/button.svelte";
 
     let postId = $page.params.id;
-    let post = [];
+    let post = {};
     let isLoading = false;
     let isLoadingButton = false;
     let isDisabled = true;
@@ -17,9 +17,7 @@
     });
 
     async function getPost() {
-        isLoading = true;
         post = await Post.find(postId);
-        isLoading = false;
     }
 
     async function update() {
@@ -28,7 +26,8 @@
         isLoadingButton = false;
     }
 
-    $: isDisabled = post.id == undefined;
+    $: isLoading = post?.id == undefined;
+    $: isDisabled = post?.id == undefined;
 </script>
 
 <svelte:head>
