@@ -1,11 +1,16 @@
 <script>
+    import { errors } from "$lib/stores/errors";
+    import { post as Post } from "$lib/models/post.js";
     import { page } from "$app/stores";
     import { onMount } from "svelte";
     import { Skeleton } from "svelte-loading-skeleton";
+    import Button from "$lib/components/button.svelte";
 
     let postId = $page.params.id;
     let post = [];
     let isLoading = false;
+    let isLoadingButton = false;
+    let isDisabled = true;
 
     onMount(async () => {
         await getPost();
@@ -13,10 +18,17 @@
 
     async function getPost() {
         isLoading = true;
-        const response = await fetch("http://127.0.0.1:8000/api/posts/" + postId);
-        post = await response.json();
+        post = await Post.find(postId);
         isLoading = false;
     }
+
+    async function update() {
+        isLoadingButton = true;
+        await Post.update(post);
+        isLoadingButton = false;
+    }
+
+    $: isDisabled = post.id == undefined;
 </script>
 
 <svelte:head>
@@ -36,6 +48,15 @@
                 {:else}
                     <input bind:value={post.name} type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input placeholder" />
                 {/if}
+                {#if $errors?.errors?.name}
+                    {#each $errors.errors.name as error}
+                        <li class="text-danger">
+                            <small>
+                                {error}
+                            </small>
+                        </li>
+                    {/each}
+                {/if}
             </div>
             <div class="mb-3">
                 <label for="formGroupExampleInput2" class="form-label">Text</label>
@@ -44,21 +65,22 @@
                 {:else}
                     <textarea bind:value={post.text} type="text" class="form-control" id="formGroupExampleInput2" placeholder="Another input placeholder" />
                 {/if}
+                {#if $errors?.errors?.text}
+                    {#each $errors.errors.text as error}
+                        <li class="text-danger">
+                            <small>
+                                {error}
+                            </small>
+                        </li>
+                    {/each}
+                {/if}
             </div>
         </div>
     </div>
-    <!-- <div class="card-footer">
-        {#if isLoading}
-            <button class="btn btn-primary" type="button" disabled>
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
-                Saving...
-            </button>
-        {:else}
-            <button on:click={save} class="btn btn-primary">Save</button>
-        {/if}
-    </div> -->
+    <div class="card-footer">
+        <Button on:click={update} {isDisabled} type="info" text="Save" isLoading={isLoadingButton} />
+    </div>
 </div>
-
 <!-- 
 <div>
     {#if post.id}

@@ -7,7 +7,7 @@
     export let href = undefined;
 </script>
 
-<svelte:element this={tag} {href} class="btn btn-{type}" disabled={isDisabled || isLoading}>
+<svelte:element on:click this={tag} {href} class="btn btn-sm btn-{type}" disabled={isDisabled || isLoading}>
     {#if isLoading}
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
     {:else}

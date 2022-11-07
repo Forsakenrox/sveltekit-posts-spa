@@ -1,6 +1,5 @@
 <script>
     import { page } from "$app/stores";
-    console.log($page);
 </script>
 
 <body class="control-sidebar-slide-open" style="height: auto;">

@@ -1,7 +1,8 @@
 <script>
+    import { post as Post } from "$lib/models/post.js";
     import { onMount } from "svelte";
     import { Skeleton } from "svelte-loading-skeleton";
-    import Button from "../../components/button.svelte";
+    import Button from "$lib/components/button.svelte";
 
     let isLoading = false;
     let posts = [];
@@ -12,8 +13,7 @@
 
     async function getPosts() {
         isLoading = true;
-        const response = await fetch("http://127.0.0.1:8000/api/posts");
-        posts = await response.json();
+        posts = await Post.all();
         isLoading = false;
     }
 
@@ -21,22 +21,14 @@
         let postId = posts.findIndex((post) => post.id == id);
 
         posts[postId].isDeleting = true;
-        const response = await fetch("http://127.0.0.1:8000/api/posts/" + id, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: id,
-        });
-        if (response.status == "200") {
-            console.log("response prishel " + posts.length);
+        let result = await Post.delete(id);
+
+        if (result == true) {
             posts = posts.filter((post) => post.isDeleting != true);
         } else {
             posts[postId].isDeleting = false;
         }
     }
-
-    $: console.log(posts);
 </script>
 
 <svelte:head>
@@ -93,13 +85,6 @@
                             <td>{post.updated_at}</td>
                             <td>
                                 <Button on:click={deletePost(post.id)} type="danger" text="X" isLoading={post?.isDeleting} />
-                                <!-- {#if post?.isDeleting == true}
-                                    <button on:click={deletePost(post.id)} class="btn btn-sm btn-danger" disabled>
-                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
-                                    </button>
-                                {:else}
-                                    <button on:click={deletePost(post.id)} class="btn btn-sm btn-danger">X</button>
-                                {/if} -->
                                 <a href="/posts/{post.id}" class="btn btn-sm btn-info">OPEN</a>
                             </td>
                         </tr>
@@ -114,5 +99,4 @@
     <div class="card-footer">
         <a href="/posts/create" class="btn btn-info">New post</a>
     </div>
-    <Button type="info" text="OPEN" />
 </div>
