@@ -34,7 +34,7 @@
         if (response.status === 200) {
             post = {};
             isLoading = false;
-            // goto("/posts");
+            goto("/posts");
         }
         if (response.status === 422) {
             errors = response.json();
