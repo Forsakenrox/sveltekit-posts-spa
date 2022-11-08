@@ -4,19 +4,21 @@
     import { onMount } from "svelte";
     import { Skeleton } from "svelte-loading-skeleton";
     import Button from "$lib/components/button.svelte";
+    import { postsStore } from "$lib/stores/postsStore";
 
-    export let data;
+    // export let data;
 
-    let isLoading = false;
-    let posts = data.posts;
+    let isLoading = true;
+    let posts = [];
 
     onMount(async () => {
-        // await getPosts();
+        await getPosts();
     });
-    console.log(data);
+
     async function getPosts() {
         isLoading = true;
         posts = await Post.all();
+        postsStore.set({ count: Object.keys(posts).length });
         isLoading = false;
     }
 

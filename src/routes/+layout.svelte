@@ -1,5 +1,6 @@
 <script>
     import { page } from "$app/stores";
+    import { postsStore } from "$lib/stores/postsStore";
 </script>
 
 <body class="control-sidebar-slide-open" style="height: auto;">
@@ -20,16 +21,13 @@
                         <li class="nav-item">
                             <a href="/" class="nav-link {$page.url.pathname == '/' ? 'active' : ''}"
                                 ><i class="nav-icon far fa-calendar-alt" />
-                                <p>
-                                    Home
-                                    <span class="badge badge-info right">2</span>
-                                </p>
+                                <p>Home</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="/posts" class="nav-link {$page.url.pathname.startsWith('/posts') ? 'active' : ''}"
                                 ><i class="nav-icon far fa-image" />
-                                <p>Posts</p>
+                                <p>Posts<span class="badge badge-info right">{$postsStore.count}</span></p>
                             </a>
                         </li>
                     </ul>
