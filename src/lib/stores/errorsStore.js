@@ -4,14 +4,14 @@ import { writable } from 'svelte/store';
 
 
 function create() {
-    const { subscribe, set, update } = writable({ token: null });
+    const { subscribe, set, update } = writable({});
 
     return {
         subscribe,
         set,
         update,
-        reset: () => set({ token: null })
+        reset: () => set({})
     };
 }
 
-export const auth = create();
+export const errorsStore = create();

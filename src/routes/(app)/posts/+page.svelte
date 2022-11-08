@@ -1,6 +1,6 @@
 <script>
-    import { errors } from "$lib/stores/errors";
-    import { post as Post } from "$lib/models/post.js";
+    import { errorsStore } from "$lib/stores/errorsStore";
+    import { Post } from "$lib/models/post.js";
     import { onMount } from "svelte";
     import { Skeleton } from "svelte-loading-skeleton";
     import Button from "$lib/components/button.svelte";
@@ -28,17 +28,20 @@
         posts[postId].isDeleting = true;
         let result = await Post.delete(id);
 
-        if (!$errors?.errors) {
+        if (!$errorsStore?.errors) {
             posts = posts.filter((post) => post.isDeleting != true);
         } else {
             posts[postId].isDeleting = false;
         }
     }
+
+    $: console.log($errorsStore);
 </script>
 
 <svelte:head>
     <title>posts-show-lol</title>
 </svelte:head>
+
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">List of posts</h3>

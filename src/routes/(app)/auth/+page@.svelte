@@ -1,10 +1,9 @@
 <script>
-    import { errors } from "$lib/stores/errors";
-    import { auth } from "$lib/stores/auth";
+    import { errorsStore } from "$lib/stores/errorsStore";
+    import { authStore } from "$lib/stores/authStore";
     import { goto } from "$app/navigation";
     import Button from "$lib/components/button.svelte";
-    import axios from "axios";
-    import { each } from "svelte/internal";
+    import { Http } from "$lib/http";
 
     let tab = "login";
     let isLoadingButton = false;
@@ -13,14 +12,16 @@
 
     async function login() {
         isLoadingButton = true;
-        console.log(123);
         const config = {
             url: "http://127.0.0.1:8000/api/auth/login",
             method: "POST",
             data: { email: name, password: password },
         };
-        let response = await handleRequest(config);
-        $auth.token = response.token;
+        const response = await Http.request(config);
+        if (response?.token) {
+            $authStore.token = response.token;
+            goto("/");
+        }
         isLoadingButton = false;
     }
 
@@ -32,30 +33,13 @@
             method: "POST",
             data: { email: name, password: password },
         };
-        await handleRequest(config);
-        isLoadingButton = false;
-    }
-
-    async function handleRequest(config) {
-        try {
-            const response = await axios(config);
-            errors.reset();
-            return response.data;
-        } catch (err) {
-            if (err.response) {
-                // The client was given an error response (5xx, 4xx)
-                if (err.response.status == 422) {
-                    errors.update(() => err.response.data);
-                }
-            } else if (err.request) {
-                console.log(2);
-                errors.update(() => err.request.responseText);
-                // The client never received a response, and the request was never left
-            } else {
-                return err;
-            }
-            return err;
+        const response = await Http.request(config);
+        if (response?.token) {
+            $authStore.token = response.token;
+            goto("/");
+            console.log(321312);
         }
+        isLoadingButton = false;
     }
 </script>
 
@@ -84,8 +68,8 @@
                             </div>
                         </div>
                     </div>
-                    {#if $errors?.errors?.email}
-                        {#each $errors.errors.email as error}
+                    {#if $errorsStore?.errors?.email}
+                        {#each $errorsStore.errors.email as error}
                             <li class="text-danger">
                                 <small>
                                     {error}
@@ -93,8 +77,8 @@
                             </li>
                         {/each}
                     {/if}
-                    {#if $errors?.errors?.password}
-                        {#each $errors.errors.password as error}
+                    {#if $errorsStore?.errors?.password}
+                        {#each $errorsStore.errors.password as error}
                             <li class="text-danger">
                                 <small>
                                     {error}

@@ -1,6 +1,6 @@
 <script>
-    import { errors } from "$lib/stores/errors";
-    import { post as Post } from "$lib/models/post.js";
+    import { errorsStore } from "$lib/stores/errorsStore";
+    import { Post } from "$lib/models/post.js";
     import { page } from "$app/stores";
     import { onMount } from "svelte";
     import { Skeleton } from "svelte-loading-skeleton";
@@ -47,8 +47,8 @@
                 {:else}
                     <input bind:value={post.name} type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input placeholder" />
                 {/if}
-                {#if $errors?.errors?.name}
-                    {#each $errors.errors.name as error}
+                {#if $errorsStore?.errors?.name}
+                    {#each $errorsStore.errors.name as error}
                         <li class="text-danger">
                             <small>
                                 {error}
@@ -64,8 +64,8 @@
                 {:else}
                     <textarea bind:value={post.text} type="text" class="form-control" id="formGroupExampleInput2" placeholder="Another input placeholder" />
                 {/if}
-                {#if $errors?.errors?.text}
-                    {#each $errors.errors.text as error}
+                {#if $errorsStore?.errors?.text}
+                    {#each $errorsStore.errors.text as error}
                         <li class="text-danger">
                             <small>
                                 {error}

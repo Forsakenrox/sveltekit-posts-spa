@@ -1,6 +1,6 @@
 <script>
-    import { errors } from "$lib/stores/errors";
-    import { post as Post } from "$lib/models/post";
+    import { errorsStore } from "$lib/stores/errorsStore";
+    import { Post } from "$lib/models/post";
     import { goto } from "$app/navigation";
     import Button from "$lib/components/button.svelte";
     let post = {};
@@ -10,7 +10,7 @@
         isLoadingButton = true;
         let result = await Post.create(post);
         isLoadingButton = false;
-        if (!$errors?.errors) {
+        if (!$errorsStore?.errors) {
             goto("/posts/");
         }
     }
@@ -25,8 +25,8 @@
             <div class="mb-3">
                 <label for="formGroupExampleInput" class="form-label">Name</label>
                 <input bind:value={post.name} type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input placeholder" />
-                {#if $errors?.errors?.name}
-                    {#each $errors.errors.name as error}
+                {#if $errorsStore?.errors?.name}
+                    {#each $errorsStore.errors.name as error}
                         <li class="text-danger">
                             <small>
                                 {error}
@@ -38,8 +38,8 @@
             <div class="mb-3">
                 <label for="formGroupExampleInput2" class="form-label">Text</label>
                 <textarea bind:value={post.text} type="text" class="form-control" id="formGroupExampleInput2" placeholder="Another input placeholder" />
-                {#if $errors?.errors?.text}
-                    {#each $errors.errors.text as error}
+                {#if $errorsStore?.errors?.text}
+                    {#each $errorsStore.errors.text as error}
                         <li class="text-danger">
                             <small>
                                 {error}
