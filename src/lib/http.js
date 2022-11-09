@@ -6,15 +6,11 @@ export class Http {
     static async request(config) {
         const basePath = "http://127.0.0.1:8000"
         let auth = get(authStore);
-        if (config.url.startsWith(basePath)) {
-            // const header = {
-            //     headers: {
-            //         'Authorization': 'Bearer ' + auth
-            //     }
-            // }
+        let IsRequestBased = config.url.startsWith(basePath);
+        // console.log(IsRequestBased);
+        if (IsRequestBased) {
             config = { ...config, headers: { 'Authorization': 'Bearer ' + auth.token } }
         }
-        console.log(config);
         try {
             const response = await axios(config);
             errorsStore.reset();
@@ -22,6 +18,15 @@ export class Http {
         } catch (err) {
             if (err.response) {
                 // The client was given an error response (5xx, 4xx)
+                //Токен просрочен\отсутствует
+                if (err.response.status == 401) {
+                    errorsStore.update(() => err.response.data);
+                    console.log(IsRequestBased);
+                    if (IsRequestBased) {
+                        authStore.logout();
+                    }
+
+                }
                 if (err.response.status == 422) {
                     errorsStore.update(() => err.response.data);
                 }

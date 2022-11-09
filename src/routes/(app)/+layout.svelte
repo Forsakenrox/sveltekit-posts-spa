@@ -1,6 +1,7 @@
 <script>
     import { page } from "$app/stores";
     import { postsStore } from "$lib/stores/postsStore";
+    import { authStore } from "$lib/stores/authStore";
 </script>
 
 <body class="control-sidebar-slide-open" style="height: auto;">
@@ -44,9 +45,15 @@
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item">
-                                    <a href="#">Home</a>
+                                    <a href="/">Home</a>
                                 </li>
                                 <li class="breadcrumb-item active">Simple Tables</li>
+                            </ol>
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item">
+                                    userName
+                                    <button class="btn btn-sm btn-link" on:click={authStore.logout}>Logout</button>
+                                </li>
                             </ol>
                         </div>
                     </div>

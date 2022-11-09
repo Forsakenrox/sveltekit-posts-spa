@@ -9,7 +9,8 @@
     let isLoadingButton = false;
     let name = "";
     let password = "";
-
+    export let data;
+    console.log(data.authStore);
     async function login() {
         isLoadingButton = true;
         const config = {
@@ -20,14 +21,16 @@
         const response = await Http.request(config);
         if (response?.token) {
             $authStore.token = response.token;
-            goto("/");
+            goto("/posts");
         }
         isLoadingButton = false;
     }
+    // $: if ($authStore.token != null) {
+    //     goto("http://localhost:5173/posts/");
+    // }
 
     async function register() {
         isLoadingButton = true;
-        console.log(123);
         const config = {
             url: "http://127.0.0.1:8000/api/auth/register",
             method: "POST",
@@ -36,14 +39,13 @@
         const response = await Http.request(config);
         if (response?.token) {
             $authStore.token = response.token;
-            goto("/");
-            console.log(321312);
+            goto("/posts");
         }
         isLoadingButton = false;
     }
 </script>
 
-<body class="login-page" style="min-height: 496.781px;">
+<form class="login-page" style="min-height: 496.781px;">
     <div class="login-box">
         <div class="login-logo">
             <a href="#"><b>Admin</b>LTE</a>
@@ -52,6 +54,10 @@
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
                 <div>
+                    {#if $errorsStore?.errors}
+                        <!-- content here -->
+                        <small class="text-danger">{$errorsStore?.message}</small>
+                    {/if}
                     <div class="input-group mb-3">
                         <input bind:value={name} type="email" class="form-control" placeholder="Email" />
                         <div class="input-group-append">
@@ -105,8 +111,8 @@
                 </div>
 
                 <!-- <p class="mb-1">
-                    <a href="forgot-password.html">I forgot my password</a>
-                </p> -->
+                            <a href="forgot-password.html">I forgot my password</a>
+                        </p> -->
                 <p class="mb-0">
                     {#if tab == "login"}
                         <Button on:click={() => (tab = "register")} type="link" text="Register tab" />
@@ -117,4 +123,4 @@
             </div>
         </div>
     </div>
-</body>
+</form>
