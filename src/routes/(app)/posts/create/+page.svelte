@@ -1,15 +1,21 @@
 <script>
     import { errorsStore } from "$lib/stores/errorsStore";
-    import { Post } from "$lib/models/post";
+    import Post from "$lib/models/Post";
     import { goto } from "$app/navigation";
     import Button from "$lib/components/button.svelte";
-    let post = {};
+
+    let post = new Post({});
     let isLoadingButton = false;
 
-    async function create() {
+    function create() {
         isLoadingButton = true;
-        let result = await Post.create(post);
+
+        // try {
+        let result = post.save().then().catch;
+        // } catch (error) {}
+
         isLoadingButton = false;
+
         if (!$errorsStore?.errors) {
             goto("/posts/");
         }
