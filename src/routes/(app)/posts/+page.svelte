@@ -1,6 +1,6 @@
 <script>
     import { errorsStore } from "$lib/stores/errorsStore";
-    import { Post } from "$lib/models/post.js";
+    import Post from "$lib/models/Post";
     import { onMount } from "svelte";
     import { Skeleton } from "svelte-loading-skeleton";
     import Button from "$lib/components/button.svelte";

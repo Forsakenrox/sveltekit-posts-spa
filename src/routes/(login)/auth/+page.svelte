@@ -10,7 +10,6 @@
     let name = "";
     let password = "";
     export let data;
-    console.log(data.authStore);
     async function login() {
         isLoadingButton = true;
         const config = {
@@ -25,9 +24,6 @@
         }
         isLoadingButton = false;
     }
-    // $: if ($authStore.token != null) {
-    //     goto("http://localhost:5173/posts/");
-    // }
 
     async function register() {
         isLoadingButton = true;
