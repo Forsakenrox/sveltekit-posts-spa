@@ -34,13 +34,15 @@ export default class Model extends BaseModel {
                 }
                 return true;
             }
-            if (config.method == 'GET') {
-                return response;
-            } else if (response?.data?.data) {
+            //Если ответ содержит коллекцию
+            if (response?.data?.data) {
                 return response.data;
-            } else if (isJsonString()) {
-                response.data.data = 1;
-                return response.data;
+                //Если коллекции нет, но есть какой то json
+                // } else if (isJsonString(response.data)) {
+            } else if (response?.data) {
+                // {data: response.data}
+                // response.data.data = 1;
+                return { data: response.data };
             } else {
                 return { data: "ok" };
             };

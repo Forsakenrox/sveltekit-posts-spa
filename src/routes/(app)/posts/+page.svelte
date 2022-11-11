@@ -13,6 +13,7 @@
 
     onMount(async () => {
         await getPosts();
+        console.log(posts);
     });
 
     async function getPosts() {
