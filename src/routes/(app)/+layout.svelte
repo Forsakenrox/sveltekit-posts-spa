@@ -2,6 +2,7 @@
     import { page } from "$app/stores";
     import { postsStore } from "$lib/stores/postsStore";
     import { authStore } from "$lib/stores/authStore";
+    import { errorsStore } from "$lib/stores/errorsStore";
 </script>
 
 <body class="control-sidebar-slide-open" style="height: auto;">
@@ -64,6 +65,9 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-12">
+                                {#if $errorsStore?.message}
+                                    <div class="alert alert-danger" role="alert">{$errorsStore.message}</div>
+                                {/if}
                                 <slot><!-- optional fallback --></slot>
                             </div>
                         </div>

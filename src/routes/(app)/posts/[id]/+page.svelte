@@ -14,6 +14,7 @@
 
     onMount(async () => {
         await getPost();
+        console.log(post);
     });
 
     async function getPost() {
@@ -22,10 +23,9 @@
 
     async function update() {
         isLoadingButton = true;
-        await Post.update(post);
+        await post.save();
         isLoadingButton = false;
     }
-
     $: isLoading = post?.id == undefined;
     $: isDisabled = post?.id == undefined;
 </script>

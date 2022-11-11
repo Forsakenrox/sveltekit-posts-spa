@@ -26,7 +26,9 @@
         let postId = posts.findIndex((post) => post.id == id);
 
         posts[postId].isDeleting = true;
-        let result = await Post.delete(id);
+        // let post = await Post.find(id);
+        let post = new Post({ id: id });
+        let result = await post.delete(id);
 
         if (!$errorsStore?.errors) {
             posts = posts.filter((post) => post.isDeleting != true);
@@ -35,7 +37,7 @@
         }
     }
 
-    $: console.log($errorsStore);
+    // $: console.log($errorsStore);
 </script>
 
 <svelte:head>

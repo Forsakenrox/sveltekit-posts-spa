@@ -7,16 +7,14 @@
     let post = new Post({});
     let isLoadingButton = false;
 
-    function create() {
+    async function create() {
         isLoadingButton = true;
 
-        // try {
-        let result = post.save().then().catch;
-        // } catch (error) {}
+        let result = await post.save();
 
         isLoadingButton = false;
-
-        if (!$errorsStore?.errors) {
+        // !$errorsStore?.errors
+        if (Object.keys($errorsStore).length === 0) {
             goto("/posts/");
         }
     }

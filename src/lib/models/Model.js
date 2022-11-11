@@ -25,8 +25,27 @@ export default class Model extends BaseModel {
         try {
             const response = await this.$http.request(config);
             errorsStore.reset();
-            return response.data;
+
+            function isJsonString(str) {
+                try {
+                    JSON.parse(str);
+                } catch (e) {
+                    return false;
+                }
+                return true;
+            }
+            if (config.method == 'GET') {
+                return response;
+            } else if (response?.data?.data) {
+                return response.data;
+            } else if (isJsonString()) {
+                response.data.data = 1;
+                return response.data;
+            } else {
+                return { data: "ok" };
+            };
         } catch (err) {
+            console.log(err.code);
             if (err.response) {
                 // The client was given an error response (5xx, 4xx)
                 //Токен просрочен\отсутствует
@@ -37,16 +56,30 @@ export default class Model extends BaseModel {
                     }
                 }
                 //Валидация не проходит
-                if (err.response.status == 422) {
+                else if (err.response.status == 422) {
                     errorsStore.update(() => err.response.data);
                 }
-            } else if (err.request) {
-                errorsStore.update(() => err.request.responseText);
+                //Урл не найден
+                else if (err.response.status == 404) {
+                    errorsStore.update(() => err?.response?.data || ({ message: "Not Found 404" }));
+                }
+                //Ошибка сервера
+                else if (err.response.status == 500) {
+                    errorsStore.update(() => err?.response?.data || ({ message: "Server error" }));
+                } else {
+                    errorsStore.update(() => ({ message: "необработанная ошибка клиента 400-500" }));
+                }
+            } else if (err) {
                 // The client never received a response, and the request was never left
-            } else {
-
+                //Ошибка сети (нет связи)
+                console.log(err);
+                if (err.code == "ERR_NETWORK") {
+                    errorsStore.update(() => err);
+                } else {
+                    errorsStore.update(() => err?.request?.responseText || ({ message: "Some network or code errors" }));
+                }
             }
-            return data;
+            return { data: "" };
         }
     }
 }
