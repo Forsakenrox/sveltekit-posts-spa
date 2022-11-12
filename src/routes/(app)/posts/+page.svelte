@@ -10,6 +10,9 @@
 
     let isLoading = true;
     let posts = [];
+    let fields = ["id", "name", "created_at", "updated_at"];
+    let order = null;
+    let searchString = "";
 
     onMount(async () => {
         await getPosts();
@@ -18,7 +21,14 @@
 
     async function getPosts() {
         isLoading = true;
-        posts = await Post.all();
+        posts = await Post.when(searchString, function (q) {
+            q.where("name", searchString);
+            q.where("text", searchString);
+        })
+            .when(order, function (q) {
+                q.orderBy(order);
+            })
+            .get();
         postsStore.set({ count: Object.keys(posts).length });
         isLoading = false;
     }
@@ -27,9 +37,9 @@
         let postId = posts.findIndex((post) => post.id == id);
 
         posts[postId].isDeleting = true;
-        // let post = await Post.find(id);
+
         let post = new Post({ id: id });
-        let result = await post.delete(id);
+        let result = await post.delete();
 
         if (!$errorsStore?.errors) {
             posts = posts.filter((post) => post.isDeleting != true);
@@ -37,8 +47,18 @@
             posts[postId].isDeleting = false;
         }
     }
-
-    // $: console.log($errorsStore);
+    async function changeOrder(field) {
+        if (order == field && !order.startsWith("-")) {
+            order = "-" + field;
+        } else {
+            order = field;
+        }
+        await getPosts();
+    }
+    $: console.log(searchString);
+    $: searchString && getPosts();
+    // $: searchString = sea;
+    // $: async (order) => await getPosts(order);
 </script>
 
 <svelte:head>
@@ -50,7 +70,7 @@
         <h3 class="card-title">List of posts</h3>
         <div class="card-tools">
             <div class="input-group input-group-sm" style="width: 150px;">
-                <input type="text" name="table_search" class="form-control float-right" placeholder="Search" />
+                <input bind:value={searchString} on:change={() => console.log(321)} type="text" name="table_search" class="form-control float-right" placeholder="Search" />
                 <div class="input-group-append">
                     <button type="submit" class="btn btn-default"><i class="fas fa-search" /></button>
                 </div>
@@ -61,28 +81,22 @@
         <table class="table table-hover text-nowrap">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>name</th>
-                    <th>created</th>
-                    <th>updated</th>
-                    <th>Actions</th>
+                    {#each fields as field}
+                        <th on:click={() => changeOrder(field)}>
+                            {field}{order == field ? "⇣" : ""}{order == "-" + field ? "⇡" : ""}
+                        </th>
+                    {/each}
+                    <th> Actions </th>
                 </tr>
             </thead>
             <tbody>
                 {#if isLoading}
                     <tr>
-                        <td>
-                            <Skeleton />
-                        </td>
-                        <td>
-                            <Skeleton />
-                        </td>
-                        <td>
-                            <Skeleton />
-                        </td>
-                        <td>
-                            <Skeleton />
-                        </td>
+                        {#each fields as field}
+                            <td>
+                                <Skeleton />
+                            </td>
+                        {/each}
                         <td>
                             <Skeleton />
                         </td>

@@ -61,6 +61,10 @@ export default class Model extends BaseModel {
                 else if (err.response.status == 422) {
                     errorsStore.update(() => err.response.data);
                 }
+                //Ошибки в запросе
+                else if (err.response.status == 400) {
+                    errorsStore.update(() => err.response.data);
+                }
                 //Урл не найден
                 else if (err.response.status == 404) {
                     errorsStore.update(() => err?.response?.data || ({ message: "Not Found 404" }));
