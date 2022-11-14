@@ -2,7 +2,13 @@
     import { page } from "$app/stores";
     import { postsStore } from "$lib/stores/postsStore";
     import { authStore } from "$lib/stores/authStore";
+    import { profileStore } from "$lib/stores/profileStore";
     import { errorsStore } from "$lib/stores/errorsStore";
+    import axios from "axios";
+    if (!$profileStore?.id) {
+        console.log(123);
+        axios.get("http://127.0.0.1:8000/api/profile", { headers: { Authorization: "Bearer " + $authStore.token } }).then((response) => ($profileStore = response.data));
+    }
 </script>
 
 <body class="control-sidebar-slide-open" style="height: auto;">
@@ -52,7 +58,7 @@
                             </ol>
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item">
-                                    userName
+                                    {$profileStore.name}
                                     <button class="btn btn-sm btn-link" on:click={authStore.logout}>Logout</button>
                                 </li>
                             </ol>

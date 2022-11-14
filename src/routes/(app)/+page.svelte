@@ -1,4 +1,6 @@
 <script>
+    import { profileStore } from "$lib/stores/profileStore";
+    import { authStore } from "$lib/stores/authStore";
 </script>
 
 <svelte:head>
