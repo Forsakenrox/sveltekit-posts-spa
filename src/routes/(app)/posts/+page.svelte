@@ -12,7 +12,7 @@
     let posts = [];
     let fields = ["id", "name", "created_at", "updated_at"];
     let order = null;
-    let searchString = "";
+    let searchString;
 
     onMount(async () => {
         await getPosts();
@@ -37,7 +37,7 @@
             .when(order, function (q) {
                 q.orderBy(order);
             })
-            .append("asddsa", "asdasd")
+            // .append("asddsa", "asdasd")
             .get();
         postsStore.set({ count: Object.keys(posts).length });
         isLoading = false;
@@ -67,6 +67,7 @@
     }
     $: console.log(searchString);
     $: searchString && getPosts();
+    $: searchString == "" && getPosts();
     // $: searchString = sea;
     // $: async (order) => await getPosts(order);
 </script>
