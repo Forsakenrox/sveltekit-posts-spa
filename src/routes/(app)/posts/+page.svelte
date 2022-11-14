@@ -22,12 +22,22 @@
     async function getPosts() {
         isLoading = true;
         posts = await Post.when(searchString, function (q) {
-            q.where("name", searchString);
-            q.where("text", searchString);
+            // q.whereIn("name", [searchString, "ae"]);
+            // q.whereIn(["name"], [searchString, "ae"]);
+            // q.whereIn({
+            //     name: [searchString],
+            //     text: [searchString],
+            //     // user: {
+            //     //     status: ["active", "inactive"],
+            //     // },
+            // });
+            q.where("search", searchString);
+            // q.where("text", searchString);
         })
             .when(order, function (q) {
                 q.orderBy(order);
             })
+            .append("asddsa", "asdasd")
             .get();
         postsStore.set({ count: Object.keys(posts).length });
         isLoading = false;
